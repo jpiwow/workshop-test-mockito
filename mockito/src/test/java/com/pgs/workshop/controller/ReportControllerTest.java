@@ -11,13 +11,18 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 
+import static java.util.Arrays.asList;
+
 import static com.pgs.workshop.testutils.MyCustomIdMatcher.myIdEqualsTo;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -29,6 +34,9 @@ import com.pgs.workshop.service.BalanceService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReportControllerTest {
+    
+    @Captor
+    private ArgumentCaptor<List<Integer>> integerListCaptor;
     
     @InjectMocks
     private ReportController reportController;
@@ -62,6 +70,25 @@ public class ReportControllerTest {
         assertNotNull(result);
         assertEquals(expectedBalance.getValue(), result);
         
+    }
+    
+    @Test
+    public void shouldInvokeGenericsConsumer() {
+        //given
+        List<Integer> inputList = asList(1, 2, 3);
+        Integer expectedResult = new Integer(inputList.size());
+        
+        
+        //when
+        when(balanceService.someGenericsConsume(any())).thenReturn(expectedResult);
+        Integer actualResult = reportController.invokeGenericsConsume(inputList);
+        
+        //then
+        verify(balanceService).someGenericsConsume(integerListCaptor.capture());
+        assertEquals(inputList.get(0), integerListCaptor.getValue().get(0));
+        assertEquals(inputList.get(1), integerListCaptor.getValue().get(1));
+        assertEquals(inputList.get(2), integerListCaptor.getValue().get(2));
+        assertEquals(expectedResult, actualResult);
     }
     
 }

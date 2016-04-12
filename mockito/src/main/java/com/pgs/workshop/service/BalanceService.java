@@ -1,6 +1,7 @@
 package com.pgs.workshop.service;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static java.util.Objects.isNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -84,6 +85,10 @@ public class BalanceService {
             .map(cashOperation -> cashOperation.getValue())
             .reduce(BigDecimal.ZERO, (accumulator, _item) -> accumulator = accumulator.add(_item));
         return balanceValue;
+    }
+    
+    public Integer someGenericsConsume(List<Integer> inputList) {
+        return isNull(inputList) ? 0 : inputList.size();
     }
     
 }

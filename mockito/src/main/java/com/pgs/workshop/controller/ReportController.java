@@ -1,6 +1,7 @@
 package com.pgs.workshop.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,10 @@ public class ReportController {
     public BigDecimal provideWeeklyCompanyBalance(Long companyId, Integer year, Integer week) {
         Balance weeklyCompanyBalance = balanceService.provideWeeklyCompanyBalance(companyId, year, week);
         return weeklyCompanyBalance.getValue();
+    }
+    
+    public Integer invokeGenericsConsume(List<Integer> inputList) {
+        return balanceService.someGenericsConsume(inputList);
     }
     
 }
