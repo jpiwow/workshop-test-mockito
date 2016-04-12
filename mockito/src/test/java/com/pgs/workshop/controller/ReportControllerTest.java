@@ -1,10 +1,14 @@
 package com.pgs.workshop.controller;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.any;
 
 import java.math.BigDecimal;
 
@@ -46,6 +50,8 @@ public class ReportControllerTest {
         BigDecimal result = reportController.provideMonthlyUserBalance(userId, year, month);
         
         //then
+        verify(balanceService, times(1)).provideMonthlyUserBalance(eq(userId), eq(year), eq(month));
+        verify(balanceService, never()).provideWeeklyCompanyBalance(any(), any(), any());
         assertNotNull(result);
         assertEquals(expectedBalance.getValue(), result);
         
