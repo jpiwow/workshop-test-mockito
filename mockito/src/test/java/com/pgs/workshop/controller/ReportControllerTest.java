@@ -15,16 +15,20 @@ import static java.util.Arrays.asList;
 
 import static com.pgs.workshop.testutils.MyCustomIdMatcher.myIdEqualsTo;
 
+import static junitparams.JUnitParamsRunner.$;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.pgs.workshop.domain.Balance;
@@ -32,7 +36,10 @@ import com.pgs.workshop.domain.Balance.BalancePeriod;
 import com.pgs.workshop.domain.Balance.BalanceType;
 import com.pgs.workshop.service.BalanceService;
 
-@RunWith(MockitoJUnitRunner.class)
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+@RunWith(JUnitParamsRunner.class)
 public class ReportControllerTest {
     
     @Captor
@@ -44,14 +51,20 @@ public class ReportControllerTest {
     @Mock
     private BalanceService balanceService;
     
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+    
+    @Parameters
     @Test
-    public void shouldProvideMonthlyUserBalance() {
+    public void shouldProvideMonthlyUserBalance(BigDecimal cashOperationValue) {
         //given
         Long userId = 12345L;
         Integer year = 2016;
         Integer month = 4;
         Balance expectedBalance = Balance.builder()
-                .value(new BigDecimal("40000.00"))
+                .value(cashOperationValue)
                 .currencyCode("EUR")
                 .balanceType(BalanceType.USER)
                 .periodType(BalancePeriod.MONTHLY)
@@ -70,6 +83,13 @@ public class ReportControllerTest {
         assertNotNull(result);
         assertEquals(expectedBalance.getValue(), result);
         
+    }
+    
+    public Object[] parametersForShouldProvideMonthlyUserBalance() {
+        return $(
+                $(new BigDecimal("40000.00")),
+                $(new BigDecimal("123.45"))
+        );
     }
     
     @Test
