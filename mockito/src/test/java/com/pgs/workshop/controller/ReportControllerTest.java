@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -53,8 +54,10 @@ public class ReportControllerTest {
         BigDecimal result = reportController.provideMonthlyUserBalance(userId, year, month);
         
         //then
-        verify(balanceService, times(1)).provideMonthlyUserBalance(argThat(myIdEqualsTo(userId)),
+        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(balanceService, times(1)).provideMonthlyUserBalance(longArgumentCaptor.capture(),
                 eq(year), eq(month));
+        assertEquals(userId, longArgumentCaptor.getValue());
         verify(balanceService, never()).provideWeeklyCompanyBalance(any(), any(), any());
         assertNotNull(result);
         assertEquals(expectedBalance.getValue(), result);
